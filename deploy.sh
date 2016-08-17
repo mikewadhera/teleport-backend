@@ -1,0 +1,1 @@
+ssh batch2 -e "cd teleport-backend && git pull origin master"
