@@ -9,6 +9,17 @@ Aws.config.update({
 poller = Aws::SQS::QueuePoller.new("https://sqs.us-east-1.amazonaws.com/088595515160/teleport-backend-dev")
  
 poller.poll do |msg|
-  puts msg.body
+  begin
+    params = JSON.parse(msg, symbolize_keys: true)
+    # Split
+    splitter    = Splitter.new(params[:id])
+    left, right = splitter.split!
+    # Stabilize
+    stabilizer_service = StabilizerService.new(params[:id], left, right)
+    stabilizer_service.submit!
+  rescue Exception => e
+    STDERR.puts "[ERROR] #{e.message}"
+    throw :skip_delete
+  end
 end
 
