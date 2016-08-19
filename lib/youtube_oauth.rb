@@ -5,7 +5,8 @@ require 'googleauth/stores/file_token_store'
 module YoutubeOauth
   
   OOB_URI = 'urn:ietf:wg:oauth:2.0:oob'
-  def user_credentials(scope)
+  def user_credentials
+    scope = Google::Apis::YoutubeV3::AUTH_YOUTUBE
     client_secrets_path = "./client_secrets.json"    
     token_store_path = "./oauth_tokens.json"
 

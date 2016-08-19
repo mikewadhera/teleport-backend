@@ -5,27 +5,26 @@ require "active_support/core_ext/string"
 class Splitter
   
   SOURCE_FORMAT = "mp4"
-  SOURCE_WIDTH = 1920
+  SOURCE_WIDTH  = 1920
   SOURCE_HEIGHT = 1080
-  SOURCE_URL_TEMPLATE = "http://s3.amazonaws.com/teleport-beta/sources/%s.#{SOURCE_FORMAT}"
   
-  # Test ID: 20160804_132848
   # Test URL: http://s3.amazonaws.com/teleport-beta/sources/20160804_132848.mp4
   
-  def initialize(id)
-    @id = id
+  def initialize(url)
+    @url = url
   end
   
   def split!
     download_source
-    return split_left, split_right
+    left, right = split_left, split_right
+    cleanup_source
+    return left, right
   end
   
   private
   
   def download_source
-    url = SOURCE_URL_TEMPLATE % @id
-    @source = open(url)
+    @source = open(@url)
   end
   
   def split_left
@@ -66,6 +65,11 @@ class Splitter
     `#{command}`
     
     path
+  end
+  
+  def cleanup_source
+    `rm -f #{@source.path}`
+    @source = nil
   end
   
 end
