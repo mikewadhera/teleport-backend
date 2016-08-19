@@ -35,7 +35,7 @@ teleports.each do |teleport|
     
       sqs = Aws::SQS::Client.new
   
-      job = { command: "merge", id: teleport.id }
+      job = { command: "upload", id: teleport.id }
   
       sqs.send_message(
         queue_url: QUEUE_URL,

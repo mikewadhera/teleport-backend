@@ -42,7 +42,7 @@ begin
         teleport.stabilizer_job_id = job_id
         teleport.status = Teleport::Status::STABILIZING
         teleport.save
-      when "merge"
+      when "upload"
         teleport = Teleport.find(params[:id])
         # Merge left and right
         left_url, right_url = StabilizerService.urls_for(teleport.stabilizer_job_id)
