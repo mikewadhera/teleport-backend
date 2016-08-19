@@ -4,7 +4,7 @@ require "aws-sdk"
 class Uploader
   
   SOURCE_FORMAT = "mp4"
-  S3_BUCKET = "teleport-beta"
+  S3_BUCKET = ENV['S3_BUCKET']
   S3_KEY_TEMPLATE = "teleports/%s"
   
   def initialize(id, path)

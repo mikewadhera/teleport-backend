@@ -4,3 +4,12 @@ development:
       database: teleport
       hosts:
         - localhost:27017
+demo:
+  clients:
+    default:
+      database: teleport
+      hosts:
+        - ds161475.mlab.com:61475
+      options:
+        user: 'admin'
+        password: 'l3tm3!nN'

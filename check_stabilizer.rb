@@ -8,10 +8,10 @@ require "aws-sdk"
 
 Aws.config.update({
   region: 'us-east-1',
-  credentials: Aws::Credentials.new("AKIAJC7WZR3RQKPSSEPQ", "qv5Uf802tD1ctqT89aoh7yFIfokZG3pQlYgeG+y/")
+  credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
 })
 
-QUEUE_URL = "https://sqs.us-east-1.amazonaws.com/088595515160/teleport-backend-dev"
+QUEUE_URL = ENV['QUEUE_URL']
 
 Mongoid.load!(File.expand_path(File.join(".", "mongoid.yml")))
 
