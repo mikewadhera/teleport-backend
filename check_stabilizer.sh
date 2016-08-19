@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source env/$1
 while true
 do
