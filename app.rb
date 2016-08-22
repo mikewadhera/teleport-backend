@@ -57,7 +57,7 @@ end
 
 get "/teleports" do
   
-  teleports = Teleport.all
+  teleports = Teleport.order_by(created_at: :desc)
   
   json({results: teleports, count: teleports.size})
 end
