@@ -54,3 +54,10 @@ post "/teleports" do
   
   json(teleport)
 end
+
+get "/teleports" do
+  
+  teleports = Teleport.all
+  
+  json(teleports)
+end
