@@ -57,7 +57,7 @@ end
 
 get "/teleports" do
   
-  teleports = Teleport.order_by(created_at: :desc)
+  teleports = Teleport.where(status: Teleport::Status::ENABLED).order_by(created_at: :desc)
   
   json({results: teleports, count: teleports.size})
 end
