@@ -59,5 +59,5 @@ get "/teleports" do
   
   teleports = Teleport.all
   
-  json(teleports)
+  json({results: teleports, count: teleports.size})
 end
