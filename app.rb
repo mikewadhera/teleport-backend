@@ -29,6 +29,9 @@ end
 post "/teleports" do
   id = params[:id]
   url = params[:url]
+  placemark = params[:placemark]
+  timemark = params[:timemark]
+  push_token = params[:push_token]
   
   teleport = Teleport.create(
     id: id,
@@ -37,10 +40,12 @@ post "/teleports" do
     utc_offset: 0,    
     latitude: nil,
     longitude: nil,
-    placemark: nil,
+    placemark: placemark,
+    timemark: timemark,
     source_url: url,
     source_duration: nil,
-    status: Teleport::Status::UPLOADED
+    status: Teleport::Status::UPLOADED,
+    push_token: push_token
   )
   
   sqs = Aws::SQS::Client.new

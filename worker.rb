@@ -6,6 +6,7 @@ require "lib/splitter"
 require "lib/stabilizer_service"
 require "lib/merger"
 require "lib/uploader"
+require "lib/push_delivery"
 require "mongoid"
 require "aws-sdk"
 
@@ -55,6 +56,13 @@ begin
         teleport.url = url
         teleport.status = Teleport::Status::ENABLED
         teleport.save
+        # Notify
+        if teleport.push_token
+          push = PushDelivery.new(teleport.push_token)
+          push.title = teleport.title
+          push.body = "Ready to watch"
+          push.deliver!
+        end
         # Cleanup
         StabilizerService.cleanup(teleport.stabilizer_job_id)
       end

@@ -21,11 +21,17 @@ class Teleport
   field :latitude, type: String
   field :longitude, type: String
   field :placemark, type: String
+  field :timemark, type: String
   field :source_url, type: String
   field :source_duration, type: Integer
   field :status, type: Integer
   field :stabilizer_job_id, type: String
   field :stabilizer_part1_size, type: String
   field :stabilizer_part2_size, type: String
+  field :push_token, type: String
+  
+  def title
+    "\uD83D\uDCCD #{self.placemark} \uD83D\uDD5C #{self.timemark}"
+  end
     
 end
