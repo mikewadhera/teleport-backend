@@ -31,7 +31,7 @@ class Teleport
   field :push_token, type: String
   
   def title
-    "\uD83D\uDCCD #{self.placemark} \uD83D\uDD5C #{self.timemark}"
+    "📍 #{self.placemark} 🕒 #{self.timemark}"
   end
     
 end
