@@ -26,6 +26,14 @@ get "/heartbeat" do
   "bump"
 end
 
+get "/inspect" do
+  puts params.inspect
+end
+
+post "/inspect" do
+  puts params.inspect
+end
+
 post "/teleports" do
   id = params[:id]
   url = params[:url]
