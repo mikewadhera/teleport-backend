@@ -1,3 +1,8 @@
+
+
+// Compile with: 
+//    g++ videostab.cpp -o videostab `pkg-config --cflags --libs opencv`
+
 #include <string>
 #include <iostream>
 #include <fstream>
