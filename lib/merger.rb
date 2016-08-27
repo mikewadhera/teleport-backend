@@ -2,7 +2,8 @@
 require "tempfile"
 
 class Merger
-  
+  WIDTH   = 1920
+  HEIGHT  = 960
   BITRATE = 8_000_000
   FORMAT  = "mp4"
   PROFILE = "baseline"
@@ -19,6 +20,8 @@ class Merger
     join_output = Tempfile.new("merger")
     
     join_path = "#{join_output.path}.#{FORMAT}"
+    
+    # Take two 960X540 and create one 1920x540
     
     join_command = %{
       ffmpeg 
@@ -37,6 +40,8 @@ class Merger
     #puts join_command
     `#{join_command}`
     
+    # Take 1920X540 and letterbox to 1920X960 (2:1)
+    
     box_output = Tempfile.new("merger")
     
     box_path = "#{box_output.path}.#{FORMAT}"
@@ -44,7 +49,7 @@ class Merger
     box_command = %{
       ffmpeg 
         -i #{join_path}
-        -vf pad="1920:960:0:210"
+        -vf pad="#{WIDTH}:#{HEIGHT}:0:210"
         -c:v #{ENCODER}
         -b:v #{BITRATE}
         -profile:v #{PROFILE}
