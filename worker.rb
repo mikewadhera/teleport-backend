@@ -55,7 +55,7 @@ begin
         { left: QUEUE_A_URL, right: QUEUE_B_URL }.each do |side, queue_url|
           sqs.send_message(
             queue_url: queue_url,
-            message_body: { command: "stabilize", id: id, side: side }.to_json
+            message_body: { command: "stabilize", id: teleport.id, side: side }.to_json
           )
         end
         
