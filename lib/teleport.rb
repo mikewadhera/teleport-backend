@@ -25,9 +25,8 @@ class Teleport
   field :source_url, type: String
   field :source_duration, type: Integer
   field :status, type: Integer
-  field :stabilizer_job_id, type: String
-  field :stabilizer_part1_size, type: String
-  field :stabilizer_part2_size, type: String
+  field :stabilized_left_path, type: String
+  field :stabilized_right_path, type: String
   field :push_token, type: String
   
   def title

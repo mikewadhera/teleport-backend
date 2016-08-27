@@ -5,6 +5,8 @@ class Merger
   
   BITRATE = 8_000_000
   FORMAT  = "mp4"
+  PROFILE = "baseline"
+  ENCODER = `ffmpeg -codecs| grep nvenc_h264`.empty? ? "libx264" : "nvenc_h264"
   
   def initialize(left, right)
     @left = left
@@ -39,19 +41,13 @@ class Merger
     
     box_path = "#{box_output.path}.#{FORMAT}"
     
-    if `ffmpeg -codecs| grep nvenc_h264`.empty?
-      encoder = "libx264"
-    else
-      encoder = "nvenc_h264"
-    end
-    
     box_command = %{
       ffmpeg 
         -i #{join_path}
         -vf pad="1920:960:0:210"
-        -c:v #{encoder}
+        -c:v #{ENCODER}
         -b:v #{BITRATE}
-        -profile:v baseline
+        -profile:v #{PROFILE}
         -c:a copy
         -c:s copy
         -map 0 

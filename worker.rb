@@ -10,12 +10,24 @@ require "lib/push_delivery"
 require "mongoid"
 require "aws-sdk"
 
+if ARGV.empty?
+  STDERR.puts "Missing queue id (A or B)"
+  exit
+end
+
 Aws.config.update({
   region: 'us-east-1',
   credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
 })
 
-QUEUE_URL = ENV['QUEUE_URL']
+QUEUE_A_URL = ENV['QUEUE_A_URL']
+QUEUE_B_URL = ENV['QUEUE_B_URL']
+
+if ARGV[0].upcase == 'B'
+  QUEUE_URL = QUEUE_B_URL
+else
+  QUEUE_URL = QUEUE_A_URL
+end
 
 Mongoid.load!(File.expand_path(File.join(".", "mongoid.yml")))
 
@@ -31,40 +43,70 @@ begin
       puts "[PROCESSING] #{params[:command]}"
     
       case params[:command]
-      when "stabilize"
+      when "post_process"
+        
+        # Set to stabilizing
         teleport = Teleport.find(params[:id])
-        puts "Splitting"
-        splitter    = Splitter.new(teleport.source_url)
-        left, right = splitter.split!
-        puts "Submitting to stabilizer service"
-        stabilizer_service = StabilizerService.new(left, right)
-        job_id = stabilizer_service.submit!
-        # Update
-        teleport.stabilizer_job_id = job_id
         teleport.status = Teleport::Status::STABILIZING
         teleport.save
+  
+        # Submit stabilize job for each side
+        sqs = Aws::SQS::Client.new
+        { left: QUEUE_A_URL, right: QUEUE_B_URL }.each do |side, queue_url|
+          sqs.send_message(
+            queue_url: queue_url,
+            message_body: { command: "stabilize", id: id, side: side }.to_json
+          )
+        end
+        
+      when "stabilize"
+        teleport  = Teleport.find(params[:id])
+        side      = params[:side]
+        
+        puts "Splitting"
+        splitter  = Splitter.new(teleport.source_url)
+        crop      = splitter.send("crop_#{side}")
+        
+        puts "Stabilizing"
+        stabilizer = StabilizerService.new(crop)
+        path       = stabilizer.stabilize!
+        
+        puts "Updating"
+        teleport.send("stabilized_#{side}_path=", path)
+        teleport.save
+        
+        puts "Cleaning"
+        `rm -f '#{crop}'`
+        
       when "upload"
         teleport = Teleport.find(params[:id])
-        # Merge left and right
-        left_url, right_url = StabilizerService.urls_for(teleport.stabilizer_job_id)
-        merger = Merger.new(left_url, right_url)
-        path = merger.merge!
-        # Upload
+
+        puts "Merging"
+        merger   = Merger.new(teleport.stabilized_left_path, teleport.stabilized_right_path)
+        path     = merger.merge!
+        
+        puts "Uploading"
         uploader = Uploader.new(teleport.id, path)
         url = uploader.upload!
-        # Update
+        
+        puts "Updating"
         teleport.url = url
         teleport.status = Teleport::Status::ENABLED
         teleport.save
-        # Notify
+        
+        puts "Notifying"
         if teleport.push_token
           push = PushDelivery.new(teleport.push_token)
           push.title = teleport.title
           push.body = "Ready to watch"
           push.deliver!
         end
-        # Cleanup
-        StabilizerService.cleanup(teleport.stabilizer_job_id)
+        
+        puts "Cleaning"
+        `rm -f '#{teleport.stabilized_left_path}' '#{teleport.stabilized_right_path}'`
+        teleport.stabilized_left_path = nil
+        teleport.stabilized_right_path = nil
+        teleport.save
       end
     
       puts "[PROCESSED] #{params[:command]}"

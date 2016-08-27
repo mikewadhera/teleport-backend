@@ -17,7 +17,8 @@ Aws.config.update({
   credentials: Aws::Credentials.new(ENV['AWS_ACCESS_KEY_ID'], ENV['AWS_SECRET_ACCESS_KEY'])
 })
 
-QUEUE_URL = ENV['QUEUE_URL']
+QUEUE_A_URL = ENV['QUEUE_A_URL']
+QUEUE_B_URL = ENV['QUEUE_B_URL']
 
 Mongoid.load!(File.expand_path(File.join(".", "mongoid.yml")))
 
@@ -58,11 +59,9 @@ post "/teleports" do
   
   sqs = Aws::SQS::Client.new
   
-  job = { command: "stabilize", id: id }
-  
   sqs.send_message(
-    queue_url: QUEUE_URL,
-    message_body: job.to_json
+    queue_url: QUEUE_A_URL,
+    message_body: { command: "post_process", id: id }.to_json
   )
   
   json(teleport)
