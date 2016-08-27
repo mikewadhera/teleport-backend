@@ -1,6 +1,7 @@
 
 require "tempfile"
 require "active_support/core_ext/string"
+require "open-uri"
 
 class Splitter
   
