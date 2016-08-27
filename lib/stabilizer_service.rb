@@ -3,6 +3,8 @@ require "tempfile"
 
 class StabilizerService
   
+  FORMAT = "mp4"
+  
   def initialize(path)
     @path = path
   end
@@ -10,11 +12,13 @@ class StabilizerService
   def stabilize!
     output = Tempfile.new("stabilizer_service")
     
-    command = "./stabilizer.sh '#{@path}' '#{output.path}'"
+    output_path = "#{output.path}.#{FORMAT}"
+    
+    command = "./stabilizer.sh '#{@path}' '#{output_path}'"
     
     `#{command}`
     
-    output.path
+    output_path
   end
   
 end
