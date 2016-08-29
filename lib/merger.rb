@@ -53,8 +53,6 @@ class Merger
         -c:v #{ENCODER}
         -b:v #{BITRATE}
         -profile:v #{PROFILE}
-        -c:a copy
-        -c:s copy
         -map 0 
         #{box_path}
     }.squish
