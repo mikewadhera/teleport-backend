@@ -17,19 +17,19 @@ cd ..
 # 2nd
 videostab images/stable.mp4 -gpu=yes -ws=yes -r=12 -q --raw
 cd images
-ffmpeg -i %08d.jpg -s "$WIDTH"X"$HEIGHT" -vcodec libx264 -preset:v ultrafast -qp 0 -c:a copy -c:s copy stable2.mp4
+ffmpeg -i %08d.jpg -s "$WIDTH"X"$HEIGHT" -vcodec libx264 -preset:v ultrafast -qp 0 -c:a copy -c:s copy $2 #stable2.mp4
 rm *.jpg
-cd ..
+#cd ..
 
 # 3rd
-videostab images/stable2.mp4 -gpu=yes -r=12 -q --raw
-cd images
-ffmpeg -i %08d.jpg -s "$WIDTH"X"$HEIGHT" -vcodec libx264 -preset:v ultrafast -qp 0 -c:a copy -c:s copy $2
-rm *.jpg
+# videostab images/stable2.mp4 -gpu=yes -r=12 -q --raw
+# cd images
+# ffmpeg -i %08d.jpg -s "$WIDTH"X"$HEIGHT" -vcodec libx264 -preset:v ultrafast -qp 0 -c:a copy -c:s copy $2
+# rm *.jpg
 
 # Cleanup
 rm stable.mp4
-rm stable2.mp4
+#rm stable2.mp4
 
 cd .. # images
 cd .. # $dir
