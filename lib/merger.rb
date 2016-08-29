@@ -7,7 +7,7 @@ class Merger
   BITRATE = 8_000_000
   FORMAT  = "mp4"
   PROFILE = "baseline"
-  ENCODER = `ffmpeg -codecs| grep nvenc_h264`.empty? ? "libx264" : "nvenc_h264"
+  ENCODER = `ffmpeg -hide_banner -codecs| grep nvenc_h264`.empty? ? "libx264" : "nvenc_h264"
   
   def initialize(left, right)
     @left = left
