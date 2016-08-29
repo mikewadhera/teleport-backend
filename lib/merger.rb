@@ -7,6 +7,7 @@ class Merger
   BITRATE = 8_000_000
   FORMAT  = "mp4"
   PROFILE = "baseline"
+  PRESET  = "llhq"
   ENCODER = `ffmpeg -hide_banner -codecs| grep nvenc_h264`.empty? ? "libx264" : "nvenc_h264"
   
   def initialize(left, right)
@@ -52,6 +53,7 @@ class Merger
         -vf pad="#{WIDTH}:#{HEIGHT}:0:210"
         -c:v #{ENCODER}
         -b:v #{BITRATE}
+        -preset #{PRESET}
         -profile:v #{PROFILE}
         -map 0 
         #{box_path}
