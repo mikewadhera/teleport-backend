@@ -55,7 +55,7 @@ void run()
         if (rawOutput) {
           
           char str[256];
-          sprintf(str, "images/%08d.jpg", nframes);
+          sprintf(str, "images/%08d.png", nframes);
           imwrite(str, stabilizedFrame);
           
         } else {
