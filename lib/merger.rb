@@ -57,7 +57,6 @@ class Merger
         -preset #{PRESET}
         -profile:v #{PROFILE}
         -c:a #{AUDIO}
-        -map 0 
         #{box_path}
     }.squish
     
