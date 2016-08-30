@@ -9,7 +9,7 @@ mkdir images
 
 videostab $1 -gpu=yes -ws=yes -r=12 -q --raw
 cd images
-ffmpeg -i %08d.png -i $1 -s "$WIDTH"X"$HEIGHT" -vcodec libx264 -preset:v ultrafast -qp 0 -c:a copy -map 0:v:0 -map 1:a:0 $2
+ffmpeg -r 24 -i $1 -r 24 -i %08d.png -r 24 -s "$WIDTH"X"$HEIGHT" -vcodec libx264 -preset:v ultrafast -qp 0 -c:a copy -map 0:a:0 -map 1:v:0 $2
 rm *.png
 
 cd .. # images
