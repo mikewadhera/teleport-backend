@@ -51,8 +51,7 @@ class Splitter
           -preset:v ultrafast
           -qp 0
           -c:a copy 
-          -c:s copy 
-          -map 0 
+          -c:s copy
           #{path}
     }.squish
   
