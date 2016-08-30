@@ -9,6 +9,7 @@ class Merger
   PROFILE = "baseline"
   PRESET  = "llhq"
   ENCODER = `ffmpeg -hide_banner -codecs| grep nvenc_h264`.empty? ? "libx264" : "nvenc_h264"
+  AUDIO   = "aac"
   
   def initialize(left, right)
     @left = left
@@ -55,6 +56,7 @@ class Merger
         -b:v #{BITRATE}
         -preset #{PRESET}
         -profile:v #{PROFILE}
+        -c:a #{AUDIO}
         -map 0 
         #{box_path}
     }.squish
