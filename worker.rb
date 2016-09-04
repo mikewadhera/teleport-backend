@@ -2,9 +2,8 @@
 $:.unshift "."
 
 require "lib/teleport"
-require "lib/splitter"
 require "lib/stabilizer_service"
-require "lib/merger"
+require "lib/merger_service"
 require "lib/uploader"
 require "lib/push_delivery"
 require "mongoid"
@@ -63,26 +62,21 @@ begin
         teleport  = Teleport.find(params[:id])
         side      = params[:side]
         
-        puts "Splitting"
-        splitter  = Splitter.new(teleport.source_url)
-        crop      = splitter.send("crop_#{side}")
-        
         puts "Stabilizing"
-        stabilizer = StabilizerService.new(crop)
+        stabilizer = StabilizerService.new(teleport.source_url, side)
         path       = stabilizer.stabilize!
         
         puts "Updating"
         teleport.send("stabilized_#{side}_path=", path)
         teleport.save
         
-        puts "Cleaning"
-        `rm -f '#{crop}'`
-        
       when "upload"
         teleport = Teleport.find(params[:id])
 
         puts "Merging"
-        merger   = Merger.new(teleport.stabilized_left_path, teleport.stabilized_right_path)
+        merger   = MergerService.new(teleport.source_url,
+                                     teleport.stabilized_left_path, 
+                                     teleport.stabilized_right_path)
         path     = merger.merge!
         
         puts "Uploading"
@@ -103,7 +97,8 @@ begin
         end
         
         puts "Cleaning"
-        `rm -f '#{teleport.stabilized_left_path}' '#{teleport.stabilized_right_path}'`
+        StabilizerService.cleanup(teleport.stabilized_left_path)
+        StabilizerService.cleanup(teleport.stabilized_right_path)
         teleport.stabilized_left_path = nil
         teleport.stabilized_right_path = nil
         teleport.save

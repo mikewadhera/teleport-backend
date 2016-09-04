@@ -4,7 +4,11 @@ require "open-uri"
 
 class StabilizerService
   
-  FORMAT = "mp4"
+  def self.cleanup(output_path)
+    # /tmp/tmp.NWO4f6A5zN/images/%08d.png => /tmp/tmp.NWO4f6A5zN/images/*.png
+    wildcard_path = output_path.sub(/%08d.png$/, "*.png")
+    `rm #{wildcard_path}`
+  end
   
   def initialize(url, side)
     @url = url
@@ -18,7 +22,9 @@ class StabilizerService
     
     output_path = `#{command}`
     
-    output_path
+    `rm -f '#{source.path}'`
+    
+    output_path.chomp
   end
   
 end
