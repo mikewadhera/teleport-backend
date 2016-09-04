@@ -191,6 +191,44 @@ void printHelp()
             "Note: some argument configurations lead to two passes, some to single pass.\n\n";
 }
 
+// custom cropped video source
+
+class LeftCroppedVideoFileSource : public VideoFileSource
+{
+public:
+  CroppedVideoFileSource(const String &path)
+    : VideoFileSource(path) {}
+  
+  virtual cv::Mat nextFrame()
+  {
+    cv::Mat fullFrame = VideoFileSource::nextFrame();
+    if (fullFrame.cols > 960 && fullFrame.rows > 540) {
+      cv::Mat croppedFrame = fullFrame(Rect(0,270,960,540));
+      return croppedFrame;
+    } else {
+      return fullFrame;
+    }
+  }
+};
+
+class RightCroppedVideoFileSource : public VideoFileSource
+{
+public:
+  CroppedVideoFileSource(const String &path)
+    : VideoFileSource(path) {}
+  
+  virtual cv::Mat nextFrame()
+  {
+    cv::Mat fullFrame = VideoFileSource::nextFrame();
+    if (fullFrame.cols > 960 && fullFrame.rows > 540) {
+      cv::Mat croppedFrame = fullFrame(Rect(960,270,960,540));
+      return croppedFrame;
+    } else {
+      return fullFrame;
+    }
+  }
+};
+
 // motion estimator builders are for concise creation of motion estimators
 
 class IMotionEstimatorBuilder
@@ -351,7 +389,8 @@ int main(int argc, const char **argv)
                 "{ fps                      | auto | }"
                 "{ q quiet                  |  | }"
                 "{ h help                   |  | }"
-                "{ raw                      |  | }";
+                "{ raw                      |  | }"
+                "{ crop                     | no | }";
         CommandLineParser cmd(argc, argv, keys);
 
         // parse command arguments
@@ -382,6 +421,15 @@ int main(int argc, const char **argv)
         // get source video parameters
 
         Ptr<VideoFileSource> source = makePtr<VideoFileSource>(inputPath);
+        
+        if (arg("crop") == "left") {
+          source = makePtr<LeftCroppedVideoFileSource>(inputPath);
+        }
+        
+        if (arg("crop") == "right") {
+          source = makePtr<RightCroppedVideoFileSource>(inputPath);
+        }
+        
         cout << "frame count (rough): " << source->count() << endl;
         if (arg("fps") == "auto")
             outputFps = source->fps();
