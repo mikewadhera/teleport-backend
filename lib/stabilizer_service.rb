@@ -1,22 +1,22 @@
 
 require "tempfile"
+require "open-uri"
 
 class StabilizerService
   
   FORMAT = "mp4"
   
-  def initialize(path)
-    @path = path
+  def initialize(url, side)
+    @url = url
+    @side = side
   end
   
   def stabilize!
-    output = Tempfile.new("stabilizer_service")
+    source = open(@url)
     
-    output_path = "#{output.path}.#{FORMAT}"
+    command = "./stabilizer.sh '#{@side}' '#{source.path}'"
     
-    command = "./stabilizer.sh '#{@path}' '#{output_path}'"
-    
-    `#{command}`
+    output_path = `#{command}`
     
     output_path
   end
