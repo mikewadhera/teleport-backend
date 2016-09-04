@@ -188,6 +188,8 @@ void printHelp()
             "      Print help.\n\n"
             "  --raw=(yes|no)\n"
             "      Output raw frames to images/ subfolder. The default is no.\n\n"
+            "  --crop=(no|left|right)\n"
+            "      Apply a crop before stabilizing source. The default is no.\n\n"
             "Note: some argument configurations lead to two passes, some to single pass.\n\n";
 }
 
@@ -209,6 +211,9 @@ public:
       return fullFrame;
     }
   }
+  
+  int width() {return 960;}
+  int height() {return 540;}
 };
 
 class RightCroppedVideoFileSource : public VideoFileSource
@@ -227,6 +232,9 @@ public:
       return fullFrame;
     }
   }
+  
+  int width() {return 960;}
+  int height() {return 540;}
 };
 
 // motion estimator builders are for concise creation of motion estimators
