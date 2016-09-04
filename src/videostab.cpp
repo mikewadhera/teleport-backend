@@ -196,7 +196,7 @@ void printHelp()
 class LeftCroppedVideoFileSource : public VideoFileSource
 {
 public:
-  CroppedVideoFileSource(const String &path)
+  LeftCroppedVideoFileSource(const String &path)
     : VideoFileSource(path) {}
   
   virtual cv::Mat nextFrame()
@@ -214,7 +214,7 @@ public:
 class RightCroppedVideoFileSource : public VideoFileSource
 {
 public:
-  CroppedVideoFileSource(const String &path)
+  RightCroppedVideoFileSource(const String &path)
     : VideoFileSource(path) {}
   
   virtual cv::Mat nextFrame()
