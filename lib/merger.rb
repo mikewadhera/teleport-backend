@@ -24,7 +24,7 @@ class Merger
       ffmpeg 
         -i #{@left}
         -i #{@right}
-        -filter_complex "[0:v:0]pad=iw*2:ih[bg]; [bg][1:v:0]overlay=w" 
+        -filter_complex "[0:v:0]pad=1920:1080:0:270[bg]; [bg][1:v:0]overlay=w:270"
         -c:v #{ENCODER}
         -b:v #{BITRATE}
         -preset #{PRESET}
