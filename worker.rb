@@ -91,8 +91,8 @@ begin
         puts "Notifying"
         if teleport.push_token
           push = PushDelivery.new(teleport.push_token)
-          push.title = teleport.title
-          push.body = "Ready to watch"
+          push.title = "Ready to watch"
+          push.body = teleport.title
           push.deliver!
         end
         
