@@ -1,6 +1,0 @@
-export AWS_ACCESS_KEY_ID=AKIAJC7WZR3RQKPSSEPQ
-export AWS_SECRET_ACCESS_KEY=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
-export QUEUE_A_URL=https://sqs.us-east-1.amazonaws.com/088595515160/teleport-backend-demo
-export QUEUE_B_URL=https://sqs.us-east-1.amazonaws.com/088595515160/teleport-backend-demo-b
-export S3_BUCKET=teleport-demo
-export PATH=/home/ubuntu/teleport-backend/bin:$PATH
